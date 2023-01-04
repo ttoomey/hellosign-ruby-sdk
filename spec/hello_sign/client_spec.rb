@@ -60,6 +60,34 @@ describe HelloSign::Client do
       HelloSign.get_account
     end
 
+    describe 'authorization methods' do
+      before { stub_get('/account', 'account') }
+
+      context 'when using auth token' do
+        subject(:client) { HelloSign::Client.new auth_token: 'test-token' }
+
+        it 'works correctly' do
+          expect { subject.get_account }.not_to raise_error
+        end
+      end
+
+      context 'when using basic auth with email and password' do
+        subject(:client) { HelloSign::Client.new email_address: 'test@email.com', password: 'password' }
+
+        it 'works correctly' do
+          expect { subject.get_account }.not_to raise_error
+        end
+      end
+
+      context 'when using basic auth with api token' do
+        subject(:client) { HelloSign::Client.new api_key: 'test-key' }
+
+        it 'works correctly' do
+          expect { subject.get_account }.not_to raise_error
+        end
+      end
+    end
+
     HelloSign::Client::ERRORS.keys.each do |key|
       context "when response status #{key}" do
         it "raise #{HelloSign::Client::ERRORS[key].to_s} on post" do
